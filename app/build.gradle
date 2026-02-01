@@ -142,6 +142,13 @@ android {
         }
     }
 
+    
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
+
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
             if (variant.buildType.name == "debug") {
