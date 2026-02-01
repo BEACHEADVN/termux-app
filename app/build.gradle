@@ -97,16 +97,16 @@ android {
         }
 
         release {
-           storeFile file(System.getenv("KEYSTORE_FILE") ?: "key.jks")
-           storePassword System.getenv("KEYSTORE_PASSWORD")
-           keyAlias System.getenv("KEY_ALIAS")
-           keyPassword System.getenv("KEY_PASSWORD")
+            storeFile file(KEYSTORE_FILE)
+            storePassword KEYSTORE_PASSWORD
+            keyAlias KEY_ALIAS
+            keyPassword KEY_PASSWORD
        }
     }
 
     buildTypes {
         release {
-        signingConfig signingConfigs.release   // ⭐ BẮT BUỘC
+        signingConfig signingConfigs.release
         minifyEnabled true
         shrinkResources false
         proguardFiles getDefaultProguardFile('proguard-android.txt'),
@@ -139,12 +139,6 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
-        }
-    }
-
-    packagingOptions {
-        jniLibs {
-            useLegacyPackaging true
         }
     }
 
