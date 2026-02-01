@@ -97,7 +97,7 @@ android {
         }
 
         release {
-            storeFile file(KEYSTORE_FILE)
+            storeFile file("../" + KEYSTORE_FILE)
             storePassword KEYSTORE_PASSWORD
             keyAlias KEY_ALIAS
             keyPassword KEY_PASSWORD
