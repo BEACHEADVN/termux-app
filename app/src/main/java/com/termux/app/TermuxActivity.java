@@ -779,27 +779,34 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
      * if targeting targetSdkVersion 30 (android 11) and running on sdk 30 (android 11) and higher.
      */
     public void requestStoragePermission(boolean isPermissionCallback) {
-        new Thread() {
-            @Override
-            public void run() {
-                // Do not ask for permission again
-                int requestCode = isPermissionCallback ? -1 : PermissionUtils.REQUEST_GRANT_STORAGE_PERMISSION;
-
-                // If permission is granted, then also setup storage symlinks.
-                if(PermissionUtils.checkAndRequestLegacyOrManageExternalStoragePermission(
-                    TermuxActivity.this, requestCode, !isPermissionCallback)) {
-                    if (isPermissionCallback)
-                        Logger.logInfoAndShowToast(TermuxActivity.this, LOG_TAG,
-                            getString(com.termux.shared.R.string.msg_storage_permission_granted_on_request));
-
-                    TermuxInstaller.setupStorageSymlinks(TermuxActivity.this);
-                } else {
-                    if (isPermissionCallback)
-                        Logger.logInfoAndShowToast(TermuxActivity.this, LOG_TAG,
-                            getString(com.termux.shared.R.string.msg_storage_permission_not_granted_on_request));
-                }
+        int requestCode = isPermissionCallback ? -1
+            : PermissionUtils.REQUEST_GRANT_STORAGE_PERMISSION;
+    
+        if (PermissionUtils.checkAndRequestLegacyOrManageExternalStoragePermission(
+            this, requestCode, !isPermissionCallback)) {
+    
+            if (isPermissionCallback) {
+                Logger.logInfoAndShowToast(
+                    this,
+                    LOG_TAG,
+                    getString(com.termux.shared.R.string.msg_storage_permission_granted_on_request)
+                );
             }
-        }.start();
+    
+            // setup symlink có thể chạy background
+            new Thread(() -> {
+                TermuxInstaller.setupStorageSymlinks(TermuxActivity.this);
+            }).start();
+    
+        } else {
+            if (isPermissionCallback) {
+                Logger.logInfoAndShowToast(
+                    this,
+                    LOG_TAG,
+                    getString(com.termux.shared.R.string.msg_storage_permission_not_granted_on_request)
+                );
+            }
+        }
     }
 
     @Override
