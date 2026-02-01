@@ -75,6 +75,7 @@ jobs:
           ls
 
           cd app/build/outputs/apk/release
+          ls
 
           APK=app/build/outputs/apk/release/*_universal.apk
           
