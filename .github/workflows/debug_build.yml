@@ -70,8 +70,9 @@ jobs:
           if ! ./gradlew assembleRelease; then
             exit_on_error "Build failed for '$APK_VERSION_TAG' build."
           fi
+          pwd
 
-          ls /app/build/outputs/apk/release
+          ls
 
           APK=app/build/outputs/apk/release/*_universal.apk
           
