@@ -289,6 +289,19 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
         mIsVisible = true;
 
+        requestStoragePermission(false);
+
+        if (mTermuxTerminalSessionActivityClient != null)
+        mTermuxTerminalSessionActivityClient.onStart();
+
+        if (mTermuxTerminalViewClient != null)
+        mTermuxTerminalViewClient.onStart();
+
+        if (mPreferences.isTerminalMarginAdjustmentEnabled())
+        addTermuxActivityRootViewGlobalLayoutListener();
+
+        registerTermuxActivityBroadcastReceiver();
+
         if (mTermuxTerminalSessionActivityClient != null)
             mTermuxTerminalSessionActivityClient.onStart();
 
