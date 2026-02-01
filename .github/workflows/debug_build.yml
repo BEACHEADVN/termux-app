@@ -74,6 +74,8 @@ jobs:
 
           ls
 
+          cd app/build/outputs/apk/release
+
           APK=app/build/outputs/apk/release/*_universal.apk
           
           if [ ! -f "$APK" ]; then
