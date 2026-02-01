@@ -261,6 +261,51 @@ final class TermuxInstaller {
                     // Recreate env file since termux prefix was wiped earlier
                     TermuxShellEnvironment.writeEnvironmentToFile(activity);
 
+                    // ---- custom one-time package install ----
+                    try {
+                        File flag = new File(TERMUX_PREFIX_DIR_PATH + "/.custom_packages_installed");
+                        if (!flag.exists()) {
+                            Logger.logInfo(LOG_TAG, "Installing custom packages: wget aapt perl zip python");
+                    
+                            ExecutionCommand pkgInstallCmd = new ExecutionCommand(
+                                    -1,
+                                    TERMUX_PREFIX_DIR_PATH + "/bin/bash",
+                                    new String[]{
+                                            "-c",
+                                            TERMUX_PREFIX_DIR_PATH + "/bin/pkg install -y wget aapt perl zip python"
+                                    },
+                                    null,
+                                    null,
+                                    ExecutionCommand.Runner.APP_SHELL.getName(),
+                                    false
+                            );
+                            pkgInstallCmd.commandLabel = "Custom Package Install";
+                            pkgInstallCmd.backgroundCustomLogLevel = Logger.LOG_LEVEL_NORMAL;
+                    
+                            AppShell shell = AppShell.execute(
+                                    activity,
+                                    pkgInstallCmd,
+                                    null,
+                                    new TermuxShellEnvironment(),
+                                    null,
+                                    true
+                            );
+                    
+                            if (shell == null || !pkgInstallCmd.isSuccessful() || pkgInstallCmd.resultData.exitCode != 0) {
+                                throw new RuntimeException("Custom package installation failed");
+                            }
+                    
+                            flag.createNewFile();
+                            Logger.logInfo(LOG_TAG, "Custom packages installed successfully");
+                        }
+                    } catch (Exception e) {
+                        showBootstrapErrorDialog(activity, whenDone,
+                                Logger.getStackTracesMarkdownString(null, Logger.getStackTracesStringArray(e)));
+                        return;
+                    }
+                    // ---- end custom ----
+
+                    
                     activity.runOnUiThread(whenDone);
 
                 } catch (final Exception e) {
