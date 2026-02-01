@@ -779,35 +779,36 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
      * if targeting targetSdkVersion 30 (android 11) and running on sdk 30 (android 11) and higher.
      */
     public void requestStoragePermission(boolean isPermissionCallback) {
-        int requestCode = isPermissionCallback ? -1
-            : PermissionUtils.REQUEST_GRANT_STORAGE_PERMISSION;
-    
-        if (PermissionUtils.checkAndRequestLegacyOrManageExternalStoragePermission(
-            this, requestCode, !isPermissionCallback)) {
-    
-            if (isPermissionCallback) {
-                Logger.logInfoAndShowToast(
-                    this,
-                    LOG_TAG,
-                    getString(com.termux.shared.R.string.msg_storage_permission_granted_on_request)
-                );
-            }
-    
-            // setup symlink có thể chạy background
-            new Thread(() -> {
-                TermuxInstaller.setupStorageSymlinks(TermuxActivity.this);
-            }).start();
-    
-        } else {
-            if (isPermissionCallback) {
-                Logger.logInfoAndShowToast(
-                    this,
-                    LOG_TAG,
-                    getString(com.termux.shared.R.string.msg_storage_permission_not_granted_on_request)
-                );
-            }
+    int requestCode = isPermissionCallback ? -1
+        : PermissionUtils.REQUEST_GRANT_STORAGE_PERMISSION;
+
+    if (PermissionUtils.checkAndRequestLegacyOrManageExternalStoragePermission(
+        this, requestCode, !isPermissionCallback, false)) {
+
+        if (isPermissionCallback) {
+            Logger.logInfoAndShowToast(
+                this,
+                LOG_TAG,
+                getString(com.termux.shared.R.string.msg_storage_permission_granted_on_request)
+            );
+        }
+
+        // setup symlink có thể chạy background
+        new Thread(() -> {
+            TermuxInstaller.setupStorageSymlinks(TermuxActivity.this);
+        }).start();
+
+    } else {
+        if (isPermissionCallback) {
+            Logger.logInfoAndShowToast(
+                this,
+                LOG_TAG,
+                getString(com.termux.shared.R.string.msg_storage_permission_not_granted_on_request)
+            );
         }
     }
+}
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
