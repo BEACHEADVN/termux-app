@@ -77,8 +77,10 @@ jobs:
           cd app/build/outputs/apk/release
           ls
 
-      - name: Upload APKs
-        uses: actions/upload-artifact@v4
+      - name: Upload APKs to GitHub Release
+        if: startsWith(github.ref, 'refs/heads/github-releases/')
+        uses: softprops/action-gh-release@v2
         with:
-          name: termux-release-apks
-          path: app/build/outputs/apk/release/*.apk
+          tag_name: ${{ env.APK_VERSION_TAG }}
+          name: ${{ env.APK_VERSION_TAG }}
+          files: app/build/outputs/apk/release/*.apk
