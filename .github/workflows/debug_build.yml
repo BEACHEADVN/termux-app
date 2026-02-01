@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - 'github-releases/**'
+      - github-releases/v0.119.0-beta.3
   pull_request:
     branches:
       - master
